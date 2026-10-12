@@ -158,7 +158,7 @@ jobs:
       - name: Install wso2ipw
         shell: bash
         run: |
-          npm install -g wso2ipw@0.1.8
+          npm install -g wso2ipw@0.1.10
           node ci/build/patch-wso2ipw-smoke-tests.js "$(npm root -g)/wso2ipw/examples" "${{ matrix.example }}"
 
       - name: Install playwright-cli and Chrome
@@ -316,7 +316,7 @@ jobs:
       - name: Install wso2ipw
         shell: bash
         run: |
-          npm install -g wso2ipw@0.1.8
+          npm install -g wso2ipw@0.1.10
           node ci/build/patch-wso2ipw-smoke-tests.js "$(npm root -g)/wso2ipw/examples" "${{ matrix.example }}"
 
       - name: Install playwright-cli and Chrome
