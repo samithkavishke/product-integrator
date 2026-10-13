@@ -742,7 +742,7 @@ jobs:
         if: ${{ inputs.build_packed_installers == true }}
         uses: actions/download-artifact@v4
         with:
-          name: ballerina-runtime-${{ matrix.arch == 'arm64' && 'macos-arm' || 'macos' }}
+          name: ballerina-runtime
           path: ballerina-runtime
 
       - name: Build macOS installer packages
@@ -753,13 +753,11 @@ jobs:
           echo "Root dir: ${ROOT_DIR}"
           BALLERINA_VERSION="${{ needs.resolve-versions.outputs.ballerina_version }}"
           if [ "${{ matrix.arch }}" = "arm64" ]; then
-          BALLERINA_ARCH="macos-arm"
           JRE_PLATFORM="macos-arm-64"
           else
-          BALLERINA_ARCH="macos"
           JRE_PLATFORM="macos-64"
           fi
-          BALLERINA_ZIP="${ROOT_DIR}/ballerina-runtime/ballerina-runtime-${BALLERINA_VERSION}-${BALLERINA_ARCH}.zip"
+          BALLERINA_ZIP="${ROOT_DIR}/ballerina-runtime/ballerina-runtime-${BALLERINA_VERSION}.zip"
           ICP_VERSION="${{ needs.resolve-versions.outputs.icp_version }}"
           ICP_VERSION_FILENAME="${ICP_VERSION%-*}"
           if [ "$ICP_VERSION" != "$ICP_VERSION_FILENAME" ]; then
@@ -1303,7 +1301,7 @@ jobs:
         if: ${{ inputs.build_packed_installers == true }}
         uses: actions/download-artifact@v4
         with:
-          name: ballerina-runtime-windows
+          name: ballerina-runtime
           path: ballerina-runtime
 
       - name: Build Windows installer packages
@@ -1314,7 +1312,7 @@ jobs:
           $ROOT_DIR = Get-Location
           Write-Host "Root dir: $ROOT_DIR"
           $BALLERINA_VERSION = "${{ needs.resolve-versions.outputs.ballerina_version }}"
-          $BALLERINA_ZIP = Join-Path $ROOT_DIR "ballerina-runtime\ballerina-runtime-${BALLERINA_VERSION}-windows.zip"
+          $BALLERINA_ZIP = Join-Path $ROOT_DIR "ballerina-runtime\ballerina-runtime-${BALLERINA_VERSION}.zip"
           $ICP_VERSION = "${{ needs.resolve-versions.outputs.icp_version }}"
           $ICP_VERSION_FILENAME = $ICP_VERSION -replace '-.*$', ''
           if ($ICP_VERSION -ne $ICP_VERSION_FILENAME) {
@@ -1814,13 +1812,12 @@ jobs:
           name: wi-extension-vsix
           path: wi/wi-extension
 
-      # The same ballerina-runtime zips the installers bundled (config `sourceFile`).
-      - name: Download Ballerina runtimes
+      # The same ballerina-runtime zip the installers bundled (config `sourceFile`).
+      - name: Download Ballerina runtime
         uses: actions/download-artifact@v4
         with:
-          pattern: ballerina-runtime-*
+          name: ballerina-runtime
           path: out
-          merge-multiple: true
 
       # ONE document describes every platform this run actually built. A target that was not built
       # is left out entirely rather than published with URLs to release assets that never existed.

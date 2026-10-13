@@ -175,16 +175,13 @@ jobs:
             echo "All required versions from component-versions.properties are available."
           fi
 
-  # The ballerina-runtime component, built once per platform. Installers bundle these zips and
-  # publish-update-source mirrors the same files to the CDN, so seeded and updated runtimes match.
+  # The ballerina-runtime component, built once for every platform. Installers bundle this zip and
+  # publish-update-source mirrors the same file to the CDN, so seeded and updated runtimes match.
   package-ballerina-runtime:
     needs: resolve-versions
     if: ${{ inputs.build_packed_installers == true }}
-    name: Package Ballerina runtime (${{ matrix.platform }})
+    name: Package Ballerina runtime
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform: [linux, macos, macos-arm, windows]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -194,13 +191,12 @@ jobs:
 
       - name: Package
         run: |
-          ./ci/build/package-ballerina-runtime.sh \
-            "${{ needs.resolve-versions.outputs.ballerina_version }}" "${{ matrix.platform }}" out
+          ./ci/build/package-ballerina-runtime.sh "${{ needs.resolve-versions.outputs.ballerina_version }}" out
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: ballerina-runtime-${{ matrix.platform }}
+          name: ballerina-runtime
           path: out/ballerina-runtime-*.zip
           compression-level: 0
           if-no-files-found: error
@@ -594,7 +590,7 @@ jobs:
         if: ${{ inputs.build_packed_installers == true}}
         uses: actions/download-artifact@v4
         with:
-          name: ballerina-runtime-linux
+          name: ballerina-runtime
           path: ballerina-runtime
 
       - name: Build Linux packages - deb
@@ -604,7 +600,7 @@ jobs:
           ROOT_DIR=$(pwd)
           echo "Root dir: ${ROOT_DIR}"
           BALLERINA_VERSION="${{ needs.resolve-versions.outputs.ballerina_version }}"
-          BALLERINA_ZIP="${ROOT_DIR}/ballerina-runtime/ballerina-runtime-${BALLERINA_VERSION}-linux.zip"
+          BALLERINA_ZIP="${ROOT_DIR}/ballerina-runtime/ballerina-runtime-${BALLERINA_VERSION}.zip"
           ICP_VERSION="${{ needs.resolve-versions.outputs.icp_version }}"
           ICP_VERSION_FILENAME="${ICP_VERSION%-*}"
           if [ "$ICP_VERSION" != "$ICP_VERSION_FILENAME" ]; then
@@ -637,7 +633,7 @@ jobs:
           ROOT_DIR=$(pwd)
           echo "Root dir: ${ROOT_DIR}"
           BALLERINA_VERSION="${{ needs.resolve-versions.outputs.ballerina_version }}"
-          BALLERINA_ZIP="${ROOT_DIR}/ballerina-runtime/ballerina-runtime-${BALLERINA_VERSION}-linux.zip"
+          BALLERINA_ZIP="${ROOT_DIR}/ballerina-runtime/ballerina-runtime-${BALLERINA_VERSION}.zip"
           ICP_VERSION="${{ needs.resolve-versions.outputs.icp_version }}"
           ICP_VERSION_FILENAME="${ICP_VERSION%-*}"
           if [ "$ICP_VERSION" != "$ICP_VERSION_FILENAME" ]; then
@@ -668,7 +664,7 @@ jobs:
           ROOT_DIR=$(pwd)
           echo "Root dir: ${ROOT_DIR}"
           BALLERINA_VERSION="${{ needs.resolve-versions.outputs.ballerina_version }}"
-          BALLERINA_ZIP="${ROOT_DIR}/ballerina-runtime/ballerina-runtime-${BALLERINA_VERSION}-linux.zip"
+          BALLERINA_ZIP="${ROOT_DIR}/ballerina-runtime/ballerina-runtime-${BALLERINA_VERSION}.zip"
           ICP_VERSION="${{ needs.resolve-versions.outputs.icp_version }}"
           ICP_VERSION_FILENAME="${ICP_VERSION%-*}"
           if [ "$ICP_VERSION" != "$ICP_VERSION_FILENAME" ]; then

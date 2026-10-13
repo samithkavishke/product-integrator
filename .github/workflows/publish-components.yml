@@ -168,14 +168,12 @@ jobs:
 
       # No installer build here to take it from: package the runtime with the same script the release
       # uses. Skipped when it is carried or for a dry run, which hashes nothing.
-      - name: Package Ballerina runtimes
+      - name: Package Ballerina runtime
         if: ${{ !inputs.dry_run && !contains(format(',{0},', inputs.carry_components), ',ballerina-runtime,') }}
         run: |
           set -euo pipefail
           BALLERINA_VERSION=$(awk -F= '$1 == "ballerina.version" { print substr($0, index($0, "=") + 1); exit }' ci/build/component-versions.properties | tr -d '\r')
-          for platform in linux macos macos-arm windows; do
-            ./ci/build/package-ballerina-runtime.sh "${BALLERINA_VERSION}" "${platform}" out
-          done
+          ./ci/build/package-ballerina-runtime.sh "${BALLERINA_VERSION}" out
 
       - name: Login to AWS
         uses: aws-actions/configure-aws-credentials@v4
