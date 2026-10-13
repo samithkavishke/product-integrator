@@ -35,7 +35,7 @@
       "id": "ballerina-runtime",
       "kind": "runtime",
       "versionKey": "ballerina.version",
-      "url": "https://github.com/ballerina-platform/ballerina-distribution/releases/download/v{version}/ballerina-{versionBase}-swan-lake-{ballerinaPlatform}.zip",
+      "sourceFile": "out/ballerina-runtime-{version}-{ballerinaPlatform}.zip",
       "requires": {
         "app": ">={appVersion}",
         "jre": ">={jreVersion}"
